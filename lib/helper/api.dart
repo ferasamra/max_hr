@@ -1,0 +1,359 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:max_hr/helper/global.dart';
+import 'package:max_hr/helper/store.dart';
+import 'package:max_hr/model/attendance.dart';
+import 'package:max_hr/model/discount_rewards.dart';
+import 'package:max_hr/model/employee.dart';
+import 'package:max_hr/model/lateness.dart';
+import 'package:max_hr/model/my_docs.dart';
+import 'package:max_hr/model/overtime.dart';
+import 'package:max_hr/model/vacations.dart';
+import 'package:max_hr/model/vacations_type.dart';
+import 'package:max_hr/view/no_internet.dart';
+import 'package:http/http.dart' as http;
+class Api{
+
+  static String url = "http://52.69.83.36:3000";
+  static String media_url = url+"/uploads/";
+  static String token = "";
+
+  static Future<Employee?> login(String username,String password)async{
+    try{
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var request = http.Request('POST', Uri.parse(url+'/api/employee/mobile/login'));
+      request.body = json.encode({
+        "username": username,
+        "password": password
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 200) {
+        String data = (await response.stream.bytesToString());
+        Employee employee = EmployeeDecoder.fromJson(json.decode(data)).employee;
+        Store.saveLoginInfo(username, password);
+        token = employee.token;
+        return employee;
+      }
+      else {
+        return null;
+      }
+    }catch(err){
+      print(err);
+    }
+  }
+  static Future<bool> checkInOut(String location)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/in-out'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "location": location
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+
+  }
+
+  static Future<List<Lateness>> getLateness(int year,int month)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/mobile/lateness'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "year": year,
+      "month": month
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return LatenessDecoder.fromJson(json.decode(data)).lateness;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <Lateness>[];
+    }
+
+  }
+
+  static Future<List<OverTime>> getOvertime(int year,int month)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/mobile/overtime'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "year": year,
+      "month": month
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return OvertimeDecoder.fromJson(json.decode(data)).overTime;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <OverTime>[];
+    }
+  }
+
+  static Future<List<Vacation>> getVacation(int year,int month)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/mobile/vacations'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "year": year,
+      "month": month
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return VacationDecoder.fromJson(json.decode(data)).vacations;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <Vacation>[];
+    }
+  }
+
+  static Future<List<DiscountReward>> getDiscountRewards(int state)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse((url+'/api/mobile/discount-rewards/${Global.employee!.eId}/$state')));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return DiscountRewardsDecoder.fromJson(json.decode(data)).discountRewards;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <DiscountReward>[];
+    }
+
+  }
+
+  static Future<List<Attendance>> getAttendance(int year , int month)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/attendance/${Global.employee!.eId}/$month/$year'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return AttendanceDecoder.fromJson(json.decode(data)).attendance;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <Attendance>[];
+    }
+
+  }
+
+  static Future<bool> addOverTimeRequest(String from,String to,String date, String note)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/overtime'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "_from": from,
+      "_to": to,
+      "date": date,
+      "note": note
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+
+  }
+
+  static Future<int> addVacationRequest(List<MyDocs> docs,String vt_id,String is_paid,String from,String to,String note)async{
+    var headers = {
+      'Authorization': 'Bearer '+token
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(url+'/api/vacations'));
+    request.fields.addAll({
+
+      'e_id': Global.employee!.eId.toString(),
+      'vt_id': vt_id,
+      'is_paid': is_paid,
+      '_from': from,
+      '_to': to,
+      'note': note
+    });
+    for(int i=0;i<docs.length;i++){
+      request.files.add(await http.MultipartFile.fromPath('files', docs[i].file.path));
+      request.fields.addAll({
+        'docs_name[$i]': docs[i].name,
+      });
+    }
+    request.headers.addAll(headers);
+    print(request.fields);
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return 1;
+    }
+    else {
+      print(response.reasonPhrase);
+      String msg = (await response.stream.bytesToString());
+      if(msg.contains('this employee donot Have vacations')){
+        return -1;
+      }else{
+        return 0;
+      }
+    }
+
+  }
+
+  static Future<List<VacationType>> getVacationTypes()async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+    };
+    var request = http.MultipartRequest('GET', Uri.parse(url+'/api/vacations/type/with-docs'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return VacationTypeDecoder.fromJson(json.decode(data)).vacations;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <VacationType>[];
+    }
+
+  }
+
+  static Future<bool> uploadAvatar(XFile image)async{
+    var headers = {
+      'Authorization': 'Bearer '+token
+    };
+    var request = http.MultipartRequest('PUT', Uri.parse(url+'/api/employee/mobile/upload-avatar'));
+    request.fields.addAll({
+      'e_id': Global.employee!.eId.toString()
+    });
+    request.files.add(await http.MultipartFile.fromPath('file', image.path));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+    return true;
+    }
+    else {
+    print(response.reasonPhrase);
+    return false;
+    }
+
+  }
+
+  static Future<String> changePassword(String old , String newPass, String confirm)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/employee/mobile/change-password'));
+    request.body = json.encode({
+      "old": old,
+      "new": newPass,
+      "confirm": confirm,
+      "e_id": Global.employee!.eId
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      Store.saveLoginInfo(Global.employee!.email, newPass);
+      return "password_change_successfully";
+    }
+    else {
+    print(response.reasonPhrase);
+    String data = (await response.stream.bytesToString());
+    return data;
+    }
+
+  }
+
+  static Future<bool> hasInternet()async{
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      var succ = await Get.to(()=>NoInternet());
+      return hasInternet();
+    } else {
+      return true;
+    }
+  }
+
+  static Future<bool> checkInterNet()async{
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
