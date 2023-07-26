@@ -16,6 +16,12 @@
 	<string>max_hr</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>MaxHR requires access to your phone’s photos to change profile photo.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>MaxHR requires access to your phone’s camera to change profile photo.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>MaxHR requires access to your phone’s camera to change profile photo.</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
