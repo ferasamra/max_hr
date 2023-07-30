@@ -64,6 +64,6 @@ class DefaultFirebaseOptions {
     projectId: 'max-hr-system',
     storageBucket: 'max-hr-system.appspot.com',
     iosClientId: '1057286229585-f72k0vtcdl848d9720jltoaia4qb1qt9.apps.googleusercontent.com',
-    iosBundleId: 'com.maxart.maxHr',
+    iosBundleId: 'com.MaxArt.MaxHR',
   );
 }
