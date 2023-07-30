@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/model/attendance.dart';
+import 'package:max_hr/widgets/header.dart';
 import 'package:max_hr/widgets/header_with_back.dart';
 import 'package:max_hr/widgets/month_card.dart';
 
@@ -40,7 +41,7 @@ class AttendanceView extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(height: 15,),
-                    HeaderBack(),
+                    Header(),
                     SizedBox(height: 15,),
                     Container(
                       height: 32,

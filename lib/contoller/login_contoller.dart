@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:max_hr/app_localization.dart';
 import 'package:max_hr/helper/api.dart';
 import 'package:max_hr/helper/app.dart';
+import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/model/employee.dart';
 import 'package:max_hr/view/main.dart';
 
@@ -18,6 +19,7 @@ class LoginController extends GetxController{
       loading(true);
       await Api.hasInternet();
       Employee? employee = await Api.login(username.text, password.text);
+      Global.employee = employee;
       if(employee != null){
         App.succMsg(context,
             "login",

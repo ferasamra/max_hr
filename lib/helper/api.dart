@@ -49,6 +49,7 @@ class Api{
       print(err);
     }
   }
+
   static Future<bool> checkInOut(String location)async{
     var headers = {
       'Authorization': 'Bearer '+token,
@@ -356,4 +357,5 @@ class Api{
       return true;
     }
   }
+
 }
