@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1057286229585",
+    "project_id": "max-hr-system",
+    "storage_bucket": "max-hr-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057286229585:android:4933f4173009cd722e3270",
+        "android_client_info": {
+          "package_name": "com.maxart.max_hr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057286229585-s1vvvt1obu1ne4jfsu80h4uqqa4ai8r7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHrUv1TY40VGp4nCKu3kPdPoToROB2QB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057286229585-s1vvvt1obu1ne4jfsu80h4uqqa4ai8r7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
