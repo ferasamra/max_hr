@@ -137,16 +137,16 @@ class Profile extends StatelessWidget {
                                     "*****************"
                                 ),
                               ),
-                              // GestureDetector(
-                              //   onTap: (){
-                              //     profileController.changeLanguage(context);
-                              //   },
-                              //   child: profileCard(
-                              //       context,
-                              //       "language",SvgPicture.asset("assets/icons/language.svg",height: 28,width: 28,),
-                              //       Global.locale == "en"?"English":"العربية"
-                              //   ),
-                              // ),
+                              GestureDetector(
+                                onTap: (){
+                                  profileController.changeLanguage(context);
+                                },
+                                child: profileCard(
+                                    context,
+                                    "language",Icon(Icons.manage_accounts,size: 28,color: App.primary),
+                                    "approvals"
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 20,),

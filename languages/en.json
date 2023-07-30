@@ -97,5 +97,6 @@
   "business_number": "business number",
   "internet_and_call_pakage": "internet and call pakage",
   "employee_state": "employee state",
-  "employee_duration": "Employee Duration"
+  "employee_duration": "Employee Duration",
+  "approvals": "Approvals"
 }

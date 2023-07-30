@@ -16,6 +16,8 @@
 	<string>max_hr</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>MaxHR requires access location because app need to know employee location to check-in work.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>MaxHR requires access to your phone’s photos to change profile photo.</string>
     <key>NSCameraUsageDescription</key>
