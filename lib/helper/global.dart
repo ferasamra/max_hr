@@ -5,7 +5,7 @@ import 'package:max_hr/model/login_info.dart';
 class Global{
 
   static String locale = "en";
-  static String token = "";
+  static String firebase_token = "";
   static LoginInfo? loginInfo;
   static String temp_email = "";
   static Employee? employee;

@@ -167,7 +167,7 @@ class OverTime extends StatelessWidget {
           SizedBox(height: 5,),
           state == -1 ?SvgPicture.asset("assets/icons/close.svg",width: 10,height: 10,)
               :state == 1 ?SvgPicture.asset("assets/icons/check.svg",width: 10,height: 10,)
-              :SvgPicture.asset("assets/icons/dash.svg",width: 10,height: 10,)
+              :SvgPicture.asset("assets/icons/dash.svg",width: 10,height: 2.5,)
         ],
       ),
     );

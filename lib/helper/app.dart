@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:max_hr/app_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class App{
   // static Color primary = Color(0xfff37335);
@@ -24,7 +25,11 @@ class App{
     return Get.snackbar(App_Localization.of(context).translate(title)
     , App_Localization.of(context).translate(msg),colorText: Colors.white,backgroundColor: primary);
   }
-
+  static Future<void> myLaunchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url),mode: LaunchMode.externalApplication,)) {
+      throw Exception('Could not launch $url');
+    }
+  }
   static errMsg(BuildContext context , String title , String msg){
     return Get.snackbar(App_Localization.of(context).translate(title)
         , App_Localization.of(context).translate(msg),colorText: Colors.white,backgroundColor: red);

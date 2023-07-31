@@ -7,6 +7,7 @@ import 'package:max_hr/helper/api.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/helper/store.dart';
+import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/change_password.dart';
 import 'package:max_hr/view/login.dart';
 import 'package:max_hr/view/personal_info.dart';
@@ -103,7 +104,7 @@ class Profile extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: (){
-                                  Get.to(()=>const PersonalInfo());
+                                  Get.to(()=>PersonalInfo());
                                 },
                                 child: profileCard(
                                     context,
@@ -125,7 +126,7 @@ class Profile extends StatelessWidget {
                           ),
                           const SizedBox(height: 20,),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
                                 onTap: (){
@@ -139,12 +140,12 @@ class Profile extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: (){
-                                  profileController.changeLanguage(context);
+                                  Get.to(()=>Approval());
                                 },
                                 child: profileCard(
                                     context,
-                                    "language",Icon(Icons.manage_accounts,size: 28,color: App.primary),
-                                    "approvals"
+                                    "approvals",Icon(Icons.manage_accounts,size: 28,color: App.primary),
+                                    "requests"
                                 ),
                               ),
                             ],

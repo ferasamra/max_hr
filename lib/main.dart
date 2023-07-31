@@ -90,21 +90,16 @@ class _MyAppState extends State<MyApp> {
       });
     });
     FirebaseMessaging.instance.getToken().then((value) {
-      print('Token Here');
-      print(value);
       setState(() {
         if(value!=null){
-          Global.token = value;
+          Global.firebase_token = value;
         }
-
       });
     });
-    // FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-    FirebaseMessaging.onMessage.listen((RemoteMessage message){
 
+    FirebaseMessaging.onMessage.listen((RemoteMessage message){
       RemoteNotification notification = message.notification!;
       AndroidNotification androd = message.notification!.android!;
-
 
       if(notification != null && androd !=null){
         flutterLocalNotificationsPlugin.show(

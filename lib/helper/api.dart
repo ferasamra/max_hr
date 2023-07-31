@@ -8,18 +8,67 @@ import 'package:max_hr/helper/store.dart';
 import 'package:max_hr/model/attendance.dart';
 import 'package:max_hr/model/discount_rewards.dart';
 import 'package:max_hr/model/employee.dart';
+import 'package:max_hr/model/employee_document.dart';
 import 'package:max_hr/model/lateness.dart';
 import 'package:max_hr/model/my_docs.dart';
 import 'package:max_hr/model/overtime.dart';
+import 'package:max_hr/model/requests.dart';
 import 'package:max_hr/model/vacations.dart';
 import 'package:max_hr/model/vacations_type.dart';
 import 'package:max_hr/view/no_internet.dart';
 import 'package:http/http.dart' as http;
+import 'package:max_hr/view/requests.dart';
 class Api{
 
   static String url = "http://52.69.83.36:3000";
   static String media_url = url+"/uploads/";
   static String token = "";
+
+  static Future<List<EmployeeDocument>> getEmployeeDocument()async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    //todo
+    // var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/${Global.employee!.roleId}/${Global.employee!.eId}'));
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/8/18'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return EmployeeDocumentDecoder.fromJson(json.decode(data)).employeeDocument;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <EmployeeDocument>[];
+    }
+
+  }
+
+  static Future<List<dynamic>?> getEmployeeDocumentById(de_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse('http://52.69.83.36:3000/api/employee/document/$de_id'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return json.decode(data);
+    }
+    else {
+      print(response.reasonPhrase);
+      return null;
+    }
+
+  }
 
   static Future<Employee?> login(String username,String password)async{
     try{
@@ -74,7 +123,85 @@ class Api{
     }
 
   }
+  static Future<bool> deleteDocument(int de_id)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('DELETE', Uri.parse(url+'/api/employee/document'));
+    request.body = json.encode({
+      "id": de_id,
+    });
+    request.headers.addAll(headers);
 
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+  static Future<bool> addDocument(XFile file,int doc_id,String note,String? expired_date)async{
+    var headers = {
+      'Authorization': 'Bearer '+token
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(url+'/api/employee/document'));
+    request.fields.addAll({
+      'e_id': Global.employee!.eId.toString(),
+      'doc_id': doc_id.toString(),
+      'note': note
+    });
+    if(expired_date != null){
+      request.fields.addAll({'expired_date': expired_date,});
+    }
+    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      print(await response.stream.bytesToString());
+      return false;
+    }
+  }
+  static Future<bool> editDocument(XFile? file,int doc_id,String note,String? expired_date,int de_id,String old_document)async{
+    var headers = {
+      'Authorization': 'Bearer '+token
+    };
+    var request = http.MultipartRequest('PUT', Uri.parse(url+'/api/employee/document'));
+    request.fields.addAll({
+      'e_id': Global.employee!.eId.toString(),
+      'doc_id': doc_id.toString(),
+      'note': note,
+      'old_document':old_document,
+      "id":de_id.toString()
+    });
+    if(expired_date != null){
+      request.fields.addAll({'expired_date': expired_date,});
+    }
+    if(file != null){
+      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    }
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
   static Future<List<Lateness>> getLateness(int year,int month)async{
     var headers = {
       'authorization': 'Bearer '+token,
@@ -92,7 +219,7 @@ class Api{
 
     if (response.statusCode == 200) {
       String data = (await response.stream.bytesToString());
-      print(data);
+      
       return LatenessDecoder.fromJson(json.decode(data)).lateness;
     }
     else {
@@ -119,7 +246,7 @@ class Api{
 
     if (response.statusCode == 200) {
       String data = (await response.stream.bytesToString());
-      print(data);
+      
       return OvertimeDecoder.fromJson(json.decode(data)).overTime;
     }
     else {
@@ -145,7 +272,7 @@ class Api{
 
     if (response.statusCode == 200) {
       String data = (await response.stream.bytesToString());
-      print(data);
+      
       return VacationDecoder.fromJson(json.decode(data)).vacations;
     }
     else {
@@ -187,12 +314,163 @@ class Api{
 
     if (response.statusCode == 200) {
       String data = (await response.stream.bytesToString());
-      print(data);
+      
       return AttendanceDecoder.fromJson(json.decode(data)).attendance;
     }
     else {
       print(response.reasonPhrase);
       return <Attendance>[];
+    }
+
+  }
+
+  static Future<bool> changeOvertimeState(int state , String note , int ot_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/mobile/line-manager-overtime-request'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "state": state,
+      "note": note,
+      "ot_id":ot_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return false;
+    }
+  }
+
+  static Future<bool> changeVacationState(int state , String note , int vr_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/mobile/line-manager-vacation-request'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "state": state,
+      "note": note,
+      "vr_id":vr_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+  static Future<bool> acceptVacationAsNotPaid(int state , String note , int vr_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/mobile/line-manager-vacation-request/un-paid'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "state": state,
+      "note": note,
+      "vr_id":vr_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
+  static Future<bool> archiveOverTime(int ot_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('DELETE', Uri.parse(url+'/api/overtime'));
+    request.body = json.encode({
+      "id":ot_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return false;
+    }
+  }
+
+  static Future<bool> archiveVacations(int vr_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('DELETE', Uri.parse(url+'/api/vacations'));
+    request.body = json.encode({
+      "id":vr_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+
+  static Future<MyRequests?> getRequests()async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/approvals/${Global.employee!.eId}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      
+      return MyRequests.fromJson(json.decode(data));
+    }
+    else {
+      print(response.reasonPhrase);
+      return null;
     }
 
   }
@@ -276,7 +554,7 @@ class Api{
 
     if (response.statusCode == 200) {
       String data = (await response.stream.bytesToString());
-      print(data);
+      
       return VacationTypeDecoder.fromJson(json.decode(data)).vacations;
     }
     else {
