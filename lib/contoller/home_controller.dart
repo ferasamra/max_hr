@@ -46,6 +46,7 @@ class HomeController extends GetxController{
 
   Future<bool> updateEmployeeData()async{
     LoginInfo? loginInfo = await Store.loadLoginInfo();
+    await Api.hasInternet();
     Global.employee = await Api.login(loginInfo!.email, loginInfo.password);
     if(Global.employee == null){
       return updateEmployeeData();

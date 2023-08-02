@@ -10,15 +10,18 @@ class OverTimeController extends GetxController{
   List<MyMonth> months = <MyMonth>[];
   ScrollController scrollController = ScrollController();
   initPage()async{
-    loading(true);
-    months.clear();
-    months.addAll(Global.months);
-    await Api.hasInternet();
-    overtimeList = await Api.getOvertime(Global.currentMonth.year, Global.currentMonth.number);
-    loading(false);
-    await Future.delayed(Duration(milliseconds: 100));
-    scrollController.animateTo(scrollController.position.maxScrollExtent,  curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 800),);
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      loading(true);
+      months.clear();
+      months.addAll(Global.months);
+      await Api.hasInternet();
+      overtimeList = await Api.getOvertime(Global.currentMonth.year, Global.currentMonth.number);
+      loading(false);
+      await Future.delayed(Duration(milliseconds: 100));
+      scrollController.animateTo(scrollController.position.maxScrollExtent,  curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 800),);
+    });
+
   }
 
   refreshData(int month, int year)async{

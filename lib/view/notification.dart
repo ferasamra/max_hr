@@ -7,6 +7,7 @@ import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/overtime.dart';
 import 'package:max_hr/view/vacation_request.dart';
+import 'package:max_hr/view/vacations.dart';
 import 'package:max_hr/widgets/header_with_back.dart';
 
 class MyNotification extends StatelessWidget {
@@ -35,9 +36,9 @@ class MyNotification extends StatelessWidget {
                 ),
                 width: Get.width,
                 child: Column(
-                  children: const [
+                  children: [
                     SizedBox(height: 10,),
-                    HeaderBack(),
+                    HeaderBack(hasNotification: false),
                     SizedBox(height: 10,),
                   ],
                 ),
@@ -57,13 +58,14 @@ class MyNotification extends StatelessWidget {
                             if(json.decode(Global.employee!.notification[index].data!)["page"] != null){
                               try{
                                 if (data!=null&&data['page'].toString() == 'vacations') {
-                                  Get.to(()=>VacationRequest());
+                                  Get.to(()=>Vacations(pushedFromNotification: true));
                                 }else if (data!=null&&data['page'].toString() == 'overtime'){
-                                  Get.to(()=>OverTime());
+                                  Get.to(()=>OverTime(pushedFromNotification: true));
                                 }else if (data!=null&&data['page'].toString() == 'approvals'){
                                   Get.to(()=>Approval(
                                     id: int.parse(data['id'].toString()),
                                     seleted_tab: int.parse(data['selected_tab'].toString()),
+                                    pushedFromNotification: true,
                                   ));
                                 }
                               }catch(e){
@@ -84,16 +86,18 @@ class MyNotification extends StatelessWidget {
                             children: [
                               Icon(Icons.notifications_none,color: App.primary,),
                               SizedBox(width: 10,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(Global.employee!.notification[index].createdAt.toString().split(".")[0],style: TextStyle(color: App.grey3,fontSize: 10)),
-                                  SizedBox(height: 0,),
-                                  Text(Global.employee!.notification[index].title,style: TextStyle(fontWeight: FontWeight.bold),),
-                                  SizedBox(height: 5,),
-                                  Text(Global.employee!.notification[index].body),
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(Global.employee!.notification[index].createdAt.toString().split(".")[0],style: TextStyle(color: App.grey3,fontSize: 10)),
+                                    SizedBox(height: 0,),
+                                    Text(Global.employee!.notification[index].title,style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 5,),
+                                    Text(Global.employee!.notification[index].body,maxLines: 20,overflow: TextOverflow.clip),
 
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),

@@ -9,10 +9,13 @@ class PersonalInfoController extends GetxController{
   RxBool loading = false.obs;
   List<EmployeeDocument> docs = <EmployeeDocument>[];
   initPage()async{
-    loading(true);
-    await Api.hasInternet();
-    docs = await Api.getEmployeeDocument();
-    loading(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      loading(true);
+      await Api.hasInternet();
+      docs = await Api.getEmployeeDocument();
+      loading(false);
+    });
+
   }
 
   deleteDocument(BuildContext context,int? de_id)async{

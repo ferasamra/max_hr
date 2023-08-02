@@ -10,11 +10,14 @@ import 'package:max_hr/helper/store.dart';
 import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/change_password.dart';
 import 'package:max_hr/view/login.dart';
+import 'package:max_hr/view/notification.dart';
 import 'package:max_hr/view/personal_info.dart';
-import 'package:max_hr/widgets/header.dart';
 
+// ignore: must_be_immutable
 class Profile extends StatelessWidget {
   ProfileController profileController = Get.put(ProfileController());
+
+  Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,157 +26,155 @@ class Profile extends StatelessWidget {
       body: Obx(() => Stack(
         children: [
           SafeArea(
-            child: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: Get.width,
+                    // height: Get.width * 0.6,
+                    decoration: BoxDecoration(
+                        color: App.bgGrey,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 25,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 3)
+                          )
+                        ]
+                    ),
 
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      width: Get.width,
-                      // height: Get.width * 0.6,
-                      decoration: BoxDecoration(
-                          color: App.bgGrey,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 25,
-                                spreadRadius: 2,
-                                offset: const Offset(0, 3)
-                            )
-                          ]
-                      ),
-
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: Container(
-                              // width: Get.width * 0.6,
-                              // height: Get.width * 0.6,
-                              // color: Colors.red,
-                              child: Column(
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20,),
+                              Stack(
                                 children: [
-                                  const SizedBox(height: 20,),
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        width: Get.width * 0.35,
-                                        height: Get.width * 0.35,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(color: Colors.grey,),
-                                            image: Global.employee!.image.isEmpty?null:DecorationImage(image: NetworkImage(Api.media_url+Global.employee!.image,),fit: BoxFit.contain)
-                                        ),
-                                        child: Global.employee!.image.isEmpty?Icon(Icons.person,size: Get.width * 0.35 -20 ,color: App.grey2 ,):null,
-                                      ),
-                                      Positioned(
-                                          bottom: 5,
-                                          left: Get.width * 0.35 / 2 - 14,
-                                          child: GestureDetector(
-                                            onTap: (){
-                                              profileController.showImagePicker(true);
-                                            },
-                                            child:const CircleAvatar(
-                                              radius: 14,
-                                              backgroundColor: Colors.white,
-                                              child: Icon(Icons.edit,color: App.primary,size: 18,),
-                                            ),
-                                          ))
-                                    ],
+                                  Container(
+                                    width: Get.width * 0.35,
+                                    height: Get.width * 0.35,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.grey,),
+                                        image: Global.employee!.image.isEmpty?null:DecorationImage(image: NetworkImage(Api.media_url+Global.employee!.image,),fit: BoxFit.contain)
+                                    ),
+                                    child: Global.employee!.image.isEmpty?Icon(Icons.person,size: Get.width * 0.35 -20 ,color: App.grey2 ,):null,
                                   ),
-                                  const SizedBox(height: 10,),
-                                  Text(Global.employee!.name,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                  const SizedBox(height: 20,),
+                                  Positioned(
+                                      bottom: 5,
+                                      left: Get.width * 0.35 / 2 - 14,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          profileController.showImagePicker(true);
+                                        },
+                                        child:const CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor: Colors.white,
+                                          child: Icon(Icons.edit,color: App.primary,size: 18,),
+                                        ),
+                                      ))
                                 ],
                               ),
-                            ),
+                              const SizedBox(height: 10,),
+                              Text(Global.employee!.name,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                              const SizedBox(height: 20,),
+                            ],
                           ),
-                          const Positioned(
-                            right: 10,
-                            top: 20,
-                            child: Icon(Icons.notifications_none,color: Colors.black,),)
-                        ],
-                      ),
+                        ),
+                        Positioned(
+                          right: 10,
+                          top: 20,
+                          child: GestureDetector(
+                              onTap: (){
+                                Get.to(()=>const MyNotification());
+                              },
+                              child: const Icon(Icons.notifications_none,color: Colors.black,),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 30,),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  Get.to(()=>PersonalInfo());
-                                },
-                                child: profileCard(
-                                    context,
-                                    "personal_info",const Icon(Icons.person,color: App.primary,size: 32,),
-                                    Global.employee!.email
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  profileController.changeLanguage(context);
-                                },
-                                child: profileCard(
-                                    context,
-                                    "language",SvgPicture.asset("assets/icons/language.svg",height: 28,width: 28,),
-                                    Global.locale == "en"?"English":"العربية"
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  Get.to(()=>ChangePassword());
-                                },
-                                child: profileCard(
-                                    context,
-                                    "change_password",SvgPicture.asset("assets/icons/change_password.svg",height: 28,width: 28,),
-                                    "*****************"
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  Get.to(()=>Approval());
-                                },
-                                child: profileCard(
-                                    context,
-                                    "approvals",Icon(Icons.manage_accounts,size: 28,color: App.primary),
-                                    "requests"
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20,),
-                          GestureDetector(
-                            onTap: (){
-                              Store.logout();
-                              Get.offAll(()=>Login());
-                            },
-                            child: Container(
-                              width: Get.width,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: App.primary,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                child: Text(App_Localization.of(context).translate("sign_out"),style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                  ),
+                  const SizedBox(height: 30,),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                Get.to(()=>PersonalInfo());
+                              },
+                              child: profileCard(
+                                  context,
+                                  "personal_info",const Icon(Icons.person,color: App.primary,size: 32,),
+                                  Global.employee!.email
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                    )
+                            GestureDetector(
+                              onTap: (){
+                                profileController.changeLanguage(context);
+                              },
+                              child: profileCard(
+                                  context,
+                                  "language",SvgPicture.asset("assets/icons/language.svg",height: 28,width: 28,),
+                                  Global.locale == "en"?"English":"العربية"
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                Get.to(()=>ChangePassword());
+                              },
+                              child: profileCard(
+                                  context,
+                                  "change_password",SvgPicture.asset("assets/icons/change_password.svg",height: 28,width: 28,),
+                                  "*****************"
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: (){
+                                Get.to(()=>Approval());
+                              },
+                              child: profileCard(
+                                  context,
+                                  "approvals",const Icon(Icons.manage_accounts,size: 28,color: App.primary),
+                                  "requests"
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20,),
+                        GestureDetector(
+                          onTap: (){
+                            Store.logout();
+                            Get.offAll(()=>Login());
+                          },
+                          child: Container(
+                            width: Get.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: App.primary,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(App_Localization.of(context).translate("sign_out"),style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
 
-                  ],
-                ),
+                ],
               ),
             ),
           ),
@@ -241,7 +242,7 @@ class Profile extends StatelessWidget {
   }
 
   profileCard(BuildContext context,String title,Widget icon,String subTitle){
-    return Container(
+    return SizedBox(
       width: Get.width * 0.5 - 20,
       height: (Get.width * 0.5 - 20) * 80 / 100,
       child: Column(
@@ -261,8 +262,8 @@ class Profile extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const Icon(Icons.edit,size: 15,color: App.grey2,),
+                  children: const [
+                    Icon(Icons.edit,size: 15,color: App.grey2,),
                   ],
                 ),
                 icon,

@@ -6,7 +6,9 @@ import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/view/notification.dart';
 
 class HeaderBack extends StatelessWidget {
-  const HeaderBack({Key? key}) : super(key: key);
+  final bool hasNotification;
+
+  HeaderBack({this.hasNotification = true});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +38,12 @@ class HeaderBack extends StatelessWidget {
           SizedBox(width: 10,),
           Text(Global.employee!.name,style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),
           Spacer(),
-          GestureDetector(
+          this.hasNotification?GestureDetector(
             onTap: (){
               Get.to(()=>MyNotification());
             },
             child: Icon(Icons.notifications_none,color: Colors.black,),
-          ),
+          ):Center(),
           SizedBox(width: 20,),
         ],
       ),

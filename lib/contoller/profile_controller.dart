@@ -19,6 +19,7 @@ class ProfileController extends GetxController{
     if(image != null){
       showImagePicker(false);
       loading(true);
+      await Api.hasInternet();
       var succ = await Api.uploadAvatar(image);
       if(succ){
         await updateEmployeeData();
@@ -33,6 +34,7 @@ class ProfileController extends GetxController{
     if(image != null){
       showImagePicker(false);
       loading(true);
+      await Api.hasInternet();
       var succ = await Api.uploadAvatar(image);
       if(succ){
         await updateEmployeeData();
@@ -45,6 +47,7 @@ class ProfileController extends GetxController{
 
   Future<bool> updateEmployeeData()async{
     LoginInfo? loginInfo = await Store.loadLoginInfo();
+    await Api.hasInternet();
     Global.employee = await Api.login(loginInfo!.email, loginInfo.password);
     if(Global.employee == null){
       return updateEmployeeData();

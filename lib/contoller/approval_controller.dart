@@ -15,17 +15,21 @@ class ApprovalController extends GetxController{
   int ot_id_notification = -1;
   int vr_id_notification = -1;
   initPage(int? selected,int? id)async{
-    if(selected!=null&&id!=null&&selected == 0){
-      ot_id_notification = id;
-    }else if(id!=null){
-      vr_id_notification = id;
-    }
-    loading(true);
-    await getData();
-    loading(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      if(selected!=null&&id!=null&&selected == 0){
+        ot_id_notification = id;
+      }else if(id!=null){
+        vr_id_notification = id;
+      }
+      loading(true);
+      await getData();
+      loading(false);
+    });
+
   }
 
   Future<MyRequests?> getData()async{
+    await Api.hasInternet();
     myRequests = await Api.getRequests();
     if(myRequests == null){
       return getData();
@@ -36,6 +40,7 @@ class ApprovalController extends GetxController{
 
   changeOvertimeState(int state , OvertimeRequest overtimeRequest,BuildContext context)async{
     overtimeRequest.loading(true);
+    await Api.hasInternet();
     bool succ = await Api.changeOvertimeState(state, overTimeNote.text, overtimeRequest.otId);
     if(succ){
       loading(true);
@@ -48,6 +53,7 @@ class ApprovalController extends GetxController{
   }
   changeVacationState(int state , VacationRequest vacationRequest,BuildContext context)async{
     vacationRequest.loading(true);
+    await Api.hasInternet();
     bool succ = await Api.changeVacationState(state, vacationNote.text, vacationRequest.vrId);
     if(succ){
       loading(true);
@@ -60,6 +66,7 @@ class ApprovalController extends GetxController{
   }
   acceptNotPaid(VacationRequest vacationRequest,BuildContext context)async{
     vacationRequest.loading(true);
+    await Api.hasInternet();
     bool succ = await Api.acceptVacationAsNotPaid(1, vacationNote.text, vacationRequest.vrId);
     if(succ){
       loading(true);
@@ -72,6 +79,7 @@ class ApprovalController extends GetxController{
   }
   archiveOverTime(OvertimeRequest overtimeRequest)async{
     overtimeRequest.loading(true);
+    await Api.hasInternet();
     await Api.archiveOverTime(overtimeRequest.otId);
     loading(true);
     await getData();
@@ -81,6 +89,7 @@ class ApprovalController extends GetxController{
 
   archiveVacation(VacationRequest vacationRequest)async{
     vacationRequest.loading(true);
+    await Api.hasInternet();
     await Api.archiveOverTime(vacationRequest.vrId);
     loading(true);
     await getData();

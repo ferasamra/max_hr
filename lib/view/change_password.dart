@@ -35,7 +35,7 @@ class ChangePassword extends StatelessWidget {
                   ),
                   width: Get.width,
                   child: Column(
-                    children: const [
+                    children: [
                       SizedBox(height: 10,),
                       HeaderBack(),
                       SizedBox(height: 10,),

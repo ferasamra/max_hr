@@ -52,11 +52,14 @@ class VacationRequestController extends GetxController{
 
   }
   initPage()async{
-    loading(true);
-    await Api.hasInternet();
-    vacations = await Api.getVacationTypes();
-    selectedVacation = vacations.first;
-    loading(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      loading(true);
+      await Api.hasInternet();
+      vacations = await Api.getVacationTypes();
+      selectedVacation = vacations.first;
+      loading(false);
+    });
+
   }
   getFormatedDate(DateTime dateTime){
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);

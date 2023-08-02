@@ -20,6 +20,7 @@ class ChangePasswordController extends GetxController {
     if(confirm.text.length >= 6 &&
         newPass.text.length >= 6 &&
         old.text.length >= 6){
+      await Api.hasInternet();
       loading(true);
       String msg = await Api.changePassword(old.text, newPass.text, confirm.text);
       if(msg == "password_change_successfully"){

@@ -23,22 +23,25 @@ class AddDocumentController extends GetxController{
   final ImagePicker picker = ImagePicker();
   XFile? image;
   initPage()async{
-    isEdit = false;
-    if(de_id != null){
-      loading(true);
-      await Api.hasInternet();
-      List<dynamic>? list = await Api.getEmployeeDocumentById(de_id);
-      if(list != null && list.length > 0){
-        isEdit = true;
-        note.text = list[0]['note'];
-        if(hasExpiredDate == 1 && list[0]['expired_date'] != null){
-          expiredDate = DateTime.parse(list[0]['expired_date']);
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      isEdit = false;
+      if(de_id != null){
+        loading(true);
+        await Api.hasInternet();
+        List<dynamic>? list = await Api.getEmployeeDocumentById(de_id);
+        if(list != null && list.length > 0){
+          isEdit = true;
+          note.text = list[0]['note'];
+          if(hasExpiredDate == 1 && list[0]['expired_date'] != null){
+            expiredDate = DateTime.parse(list[0]['expired_date']);
+          }
+          oldDocument = list[0]['document'].toString();
         }
-        oldDocument = list[0]['document'].toString();
+        print(list);
+        loading(false);
       }
-      print(list);
-      loading(false);
-    }
+    });
+
   }
   refreshPage(){
     fake(!fake.value);

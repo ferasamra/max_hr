@@ -9,6 +9,7 @@ import 'package:max_hr/model/employee.dart';
 import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/overtime.dart';
 import 'package:max_hr/view/vacation_request.dart';
+import 'package:max_hr/view/vacations.dart';
 import 'package:max_hr/widgets/month_card.dart';
 import 'package:max_hr/widgets/header.dart';
 
@@ -39,7 +40,7 @@ class _HomeState extends State<Home> {
   void _handleMessage(RemoteMessage message) {
     try{
       if (message.data!=null&&message.data['page'].toString() == 'vacations') {
-        Get.to(()=>VacationRequest());
+        Get.to(()=>Vacations());
       }else if (message.data!=null&&message.data['page'].toString() == 'overtime'){
         Get.to(()=>OverTime());
       }else if (message.data!=null&&message.data['page'].toString() == 'approvals'){

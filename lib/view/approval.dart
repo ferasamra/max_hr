@@ -11,11 +11,12 @@ import 'package:max_hr/widgets/header_with_back.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Approval extends StatelessWidget {
-
+  bool pushedFromNotification;
   ApprovalController approvalController = Get.put(ApprovalController());
   Approval({
     int? seleted_tab,
-    int? id
+    int? id,
+    this.pushedFromNotification = false
   }){
     approvalController.initPage(seleted_tab, id);
     if(seleted_tab != null){
@@ -31,7 +32,7 @@ class Approval extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 15,),
-              HeaderBack(),
+              HeaderBack(hasNotification: pushedFromNotification?false:true),
               SizedBox(height: 15,),
               Expanded(
                 child: Container(

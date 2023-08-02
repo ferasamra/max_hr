@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:max_hr/contoller/login_contoller.dart';
 import 'package:max_hr/helper/api.dart';
@@ -17,19 +18,22 @@ class IntroController extends GetxController{
   }
 
   initApp() async{
-    await Future.delayed(Duration(milliseconds: 2000));
-    await Api.hasInternet();
-    LoginInfo? loginInfo = await Store.loadLoginInfo();
-    if(loginInfo == null){
-      Get.off(()=>Login());
-    }else{
-      Global.employee = await Api.login(loginInfo.email, loginInfo.password);
-      if(Global.employee != null){
-        Get.to(()=>Main());
-      }else{
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await Future.delayed(Duration(milliseconds: 2000));
+      await Api.hasInternet();
+      LoginInfo? loginInfo = await Store.loadLoginInfo();
+      if(loginInfo == null){
         Get.off(()=>Login());
+      }else{
+        Global.employee = await Api.login(loginInfo.email, loginInfo.password);
+        if(Global.employee != null){
+          Get.to(()=>Main());
+        }else{
+          Get.off(()=>Login());
+        }
       }
-    }
+    });
+
   }
 
 }

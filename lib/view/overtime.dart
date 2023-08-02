@@ -8,8 +8,9 @@ import 'package:max_hr/widgets/header_with_back.dart';
 import 'package:max_hr/widgets/month_card.dart';
 
 class OverTime extends StatelessWidget {
+  bool pushedFromNotification;
   OverTimeController overTimeController = Get.put(OverTimeController());
-  OverTime(){
+  OverTime({this.pushedFromNotification = false}){
     overTimeController.initPage();
   }
   @override
@@ -37,7 +38,7 @@ class OverTime extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(height: 15,),
-                        HeaderBack(),
+                        HeaderBack(hasNotification: pushedFromNotification?false:true),
                         SizedBox(height: 15,),
                         Container(
                           height: 32,
