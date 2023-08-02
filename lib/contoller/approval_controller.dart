@@ -11,8 +11,15 @@ class ApprovalController extends GetxController{
   MyRequests? myRequests;
   TextEditingController overTimeNote = TextEditingController();
   TextEditingController vacationNote = TextEditingController();
-
-  initPage()async{
+  int? selected_notification;
+  int ot_id_notification = -1;
+  int vr_id_notification = -1;
+  initPage(int? selected,int? id)async{
+    if(selected!=null&&id!=null&&selected == 0){
+      ot_id_notification = id;
+    }else if(id!=null){
+      vr_id_notification = id;
+    }
     loading(true);
     await getData();
     loading(false);

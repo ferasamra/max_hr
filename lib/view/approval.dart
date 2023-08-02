@@ -13,8 +13,14 @@ import 'package:shimmer/shimmer.dart';
 class Approval extends StatelessWidget {
 
   ApprovalController approvalController = Get.put(ApprovalController());
-  Approval(){
-    approvalController.initPage();
+  Approval({
+    int? seleted_tab,
+    int? id
+  }){
+    approvalController.initPage(seleted_tab, id);
+    if(seleted_tab != null){
+      approvalController.selectedPage(seleted_tab);
+    }
   }
 
   @override
@@ -105,6 +111,7 @@ class Approval extends StatelessWidget {
   }
   _listOverTime(BuildContext context){
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: 20),
         itemCount: approvalController.myRequests!.overtimes.length,
         itemBuilder: (context, index){
       return Obx(() => Container(
@@ -112,6 +119,11 @@ class Approval extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: App.bgGrey,
+          border: Border.all(
+              color: approvalController.ot_id_notification == approvalController.myRequests!.overtimes[index].otId
+                  ?App.primary
+                  :Colors.transparent
+          )
         ),
         // padding: EdgeInsets.only(bottom: 15,right: 15,left: 15),
         margin: EdgeInsets.only(left: 15,right: 15,top: 15),
@@ -246,6 +258,7 @@ class Approval extends StatelessWidget {
   }
   _listVacations(BuildContext context){
     return ListView.builder(
+        padding: EdgeInsets.only(bottom: 20),
         itemCount: approvalController.myRequests!.vacations.length,
         itemBuilder: (context, index){
           return Obx(() => Container(
@@ -253,6 +266,11 @@ class Approval extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: App.bgGrey,
+              border: Border.all(
+                color: approvalController.vr_id_notification == approvalController.myRequests!.vacations[index].vrId
+                    ?App.primary
+                    :Colors.transparent
+              )
             ),
             // padding: EdgeInsets.only(bottom: 15,right: 15,left: 15),
             margin: EdgeInsets.only(left: 15,right: 15,top: 15),

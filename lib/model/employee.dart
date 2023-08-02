@@ -66,6 +66,7 @@ class Employee {
   int hasVacations;
   String employeeState;
   List<Company> companies;
+  List<Notification> notification;
   int absenceCount;
   int latnessCount;
   int latnessMinutes;
@@ -121,6 +122,7 @@ class Employee {
     required this.attendancePercentPerMonth,
     required this.lastOperation,
     required this.token,
+    required this.notification,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
@@ -171,6 +173,7 @@ class Employee {
     attendancePercentPerMonth: json["attendance_percent_per_month"]==null?0:double.parse(json["attendance_percent_per_month"].toString()) ,
     lastOperation: LastOperation.fromJson(json["last_operation"]),
     token: json["token"],
+    notification: List<Notification>.from(json["notification"].map((x) => Notification.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -215,6 +218,7 @@ class Employee {
     "has_vacations": hasVacations,
     "employee_state": employeeState,
     "companies": List<dynamic>.from(companies.map((x) => x.toJson())),
+    "notification": List<dynamic>.from(notification.map((x) => x.toJson())),
     "absence_count": absenceCount,
     "latness_count": latnessCount,
     "latness_minutes": latnessMinutes,
@@ -297,5 +301,46 @@ class LastOperation {
     "e_id": eId,
     "in_location": inLocation,
     "out_location": outLocation,
+  };
+
+}
+
+class Notification {
+  int notificationId;
+  String title;
+  String body;
+  String? data;
+  DateTime createdAt;
+  int eId;
+  int isRead;
+
+  Notification({
+    required this.notificationId,
+    required this.title,
+    required this.body,
+    required this.data,
+    required this.eId,
+    required this.createdAt,
+    required this.isRead,
+  });
+
+  factory Notification.fromJson(Map<String, dynamic> json) => Notification(
+    notificationId: json["notification_id"],
+    title: json["title"],
+    body: json["body"],
+    data: json["data"],
+    eId: json["e_id"],
+    isRead: json["is_read"],
+    createdAt: DateTime.parse(json["created_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "notification_id": notificationId,
+    "title": title,
+    "body": body,
+    "data": data,
+    "e_id": eId,
+    "is_read": isRead,
+    "created_at": createdAt.toIso8601String(),
   };
 }

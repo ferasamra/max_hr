@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,8 +28,7 @@ class Api{
       'authorization': 'Bearer '+token,
     };
     //todo
-    // var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/${Global.employee!.roleId}/${Global.employee!.eId}'));
-    var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/8/18'));
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/${Global.employee!.roleId}/${Global.employee!.eId}'));
 
     request.headers.addAll(headers);
 
@@ -78,7 +76,8 @@ class Api{
       var request = http.Request('POST', Uri.parse(url+'/api/employee/mobile/login'));
       request.body = json.encode({
         "username": username,
-        "password": password
+        "password": password,
+        "firebase_token":Global.firebase_token
       });
       request.headers.addAll(headers);
 
