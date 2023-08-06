@@ -38,7 +38,9 @@ class HomeController extends GetxController{
         String locationString =  "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}";
         if(Global.employee!.need_photo_at_check_in == 1
         &&!(Global.employee!.lastOperation != null && Global.employee!.lastOperation!.outDateTime == null)){
-          final XFile? image = await picker.pickImage(source: ImageSource.camera);
+          final XFile? image = await picker.pickImage(source: ImageSource.camera,
+              preferredCameraDevice: CameraDevice.front
+          );
           if(image != null ){
             await Api.checkInOutWithImage(locationString,image);
           }else{
