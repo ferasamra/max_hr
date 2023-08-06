@@ -27,7 +27,6 @@ class Api{
     var headers = {
       'authorization': 'Bearer '+token,
     };
-    //todo
     var request = http.Request('GET', Uri.parse(url+'/api/mobile/employee-document/${Global.employee!.roleId}/${Global.employee!.eId}'));
 
     request.headers.addAll(headers);
@@ -97,7 +96,32 @@ class Api{
       print(err);
     }
   }
+  static Future<bool> checkInOutWithImage(String location,XFile? image)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(url+'/api/in-out/with-image'));
+    request.fields.addAll({
+      "e_id": Global.employee!.eId.toString(),
+      "location": location
+    });
+    if(image != null){
+      request.files.add(await http.MultipartFile.fromPath('file', image.path));
+    }
+    request.headers.addAll(headers);
 
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+
+  }
   static Future<bool> checkInOut(String location)async{
     var headers = {
       'Authorization': 'Bearer '+token,

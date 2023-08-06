@@ -34,6 +34,7 @@ class Employee {
   int cId;
   int roleId;
   int isActive;
+  int need_photo_at_check_in;
   int? duration;
   int isFlixable;
   String? inTime;
@@ -77,6 +78,7 @@ class Employee {
   Employee({
     required this.eId,
     required this.name,
+    required this.need_photo_at_check_in,
     required this.email,
     required this.username,
     required this.password,
@@ -128,6 +130,7 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
     eId: json["e_id"],
     name: json["name"],
+    need_photo_at_check_in: json["need_photo_at_check_in"],
     email: json["email"],
     username: json["username"],
     password: json["password"],

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:max_hr/helper/api.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/helper/global.dart';
@@ -13,6 +14,7 @@ class HomeController extends GetxController{
   RxInt selectedPage = 0.obs;
   RxBool loading = false.obs;
   RxBool shadow = false.obs;
+  final ImagePicker picker = ImagePicker();
 
   @override
   void onInit() {
@@ -34,7 +36,21 @@ class HomeController extends GetxController{
       Position? location = await _determinePosition(context);
       if(location != null){
         String locationString =  "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}";
-        await Api.checkInOut(locationString);
+        if(Global.employee!.need_photo_at_check_in == 1
+        &&!(Global.employee!.lastOperation != null && Global.employee!.lastOperation!.outDateTime == null)){
+          final XFile? image = await picker.pickImage(source: ImageSource.camera);
+          if(image != null ){
+            await Api.checkInOutWithImage(locationString,image);
+          }else{
+            App.errMsg(context, "attendance", "please_take_a_photo_because_it_required");
+            loading(false);
+            return;
+          }
+
+        }else{
+          await Api.checkInOutWithImage(locationString,null);
+        }
+
         await updateEmployeeData();
       }
       loading(false);
