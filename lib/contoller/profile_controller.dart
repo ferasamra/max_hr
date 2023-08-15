@@ -15,7 +15,7 @@ class ProfileController extends GetxController{
   final ImagePicker picker = ImagePicker();
 
   pickGallery(BuildContext context)async{
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery,imageQuality: 15);
     if(image != null){
       showImagePicker(false);
       loading(true);
@@ -30,7 +30,7 @@ class ProfileController extends GetxController{
     }
   }
   pickCamera(BuildContext context)async{
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera,imageQuality: 15);
     if(image != null){
       showImagePicker(false);
       loading(true);

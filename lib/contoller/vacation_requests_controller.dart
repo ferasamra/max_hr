@@ -77,7 +77,7 @@ class VacationRequestController extends GetxController{
     docId = Id;
   }
   pickGallary()async{
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery,imageQuality: 15);
     if(image != null){
       files.add(MyDocs(image, docName, docId));
       showImagePicker(false);
@@ -85,7 +85,7 @@ class VacationRequestController extends GetxController{
     }
   }
   pickCamera()async{
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera,imageQuality: 15);
     if(image != null){
       files.add(MyDocs(image, docName, docId));
       showImagePicker(false);

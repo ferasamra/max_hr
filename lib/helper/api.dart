@@ -19,7 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:max_hr/view/requests.dart';
 class Api{
 
-  static String url = "http://52.69.83.36:3000";
+  static String url = "http://hr-system-613863818.ap-northeast-1.elb.amazonaws.com";
   static String media_url = url+"/uploads/";
   static String token = "";
 
