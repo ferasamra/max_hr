@@ -5,24 +5,43 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:max_hr/model/tickets.dart';
 import 'package:max_hr/model/vacations_type.dart';
 
 MyRequests myRequestsFromJson(String str) => MyRequests.fromJson(json.decode(str));
 
 String myRequestsToJson(MyRequests data) => json.encode(data.toJson());
+class EmployeeRequestsDecoder {
 
+  List<EmployeeRequest> requests;
+
+  EmployeeRequestsDecoder({
+    required this.requests,
+  });
+
+  factory EmployeeRequestsDecoder.fromJson(Map<String, dynamic> json) => EmployeeRequestsDecoder(
+    requests: List<EmployeeRequest>.from(json["requests"].map((x) => EmployeeRequest.fromJson(x))),
+  );
+
+}
 class MyRequests {
   List<VacationRequest> vacations;
   List<OvertimeRequest> overtimes;
+  List<EmployeeRequest> requests;
+  List<Ticket> tickets;
 
   MyRequests({
     required this.vacations,
     required this.overtimes,
+    required this.requests,
+    required this.tickets,
   });
 
   factory MyRequests.fromJson(Map<String, dynamic> json) => MyRequests(
     vacations: List<VacationRequest>.from(json["vacations"].map((x) => VacationRequest.fromJson(x))),
     overtimes: List<OvertimeRequest>.from(json["overtimes"].map((x) => OvertimeRequest.fromJson(x))),
+    requests: List<EmployeeRequest>.from(json["requests"].map((x) => EmployeeRequest.fromJson(x))),
+    tickets: List<Ticket>.from(json["tickets"].map((x) => Ticket.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -310,5 +329,69 @@ class RequestVacationDoc{
     "type_name": type_name,
     "doc": doc,
   };
+
+}
+
+class EmployeeRequest {
+  int e_id;
+  String employee;
+  String request_type;
+  int requests_id;
+  DateTime requested_at;
+  String note;
+  RxBool loading = false.obs;
+  List<EmployeeRequestLineManagere> lineManageres;
+
+  EmployeeRequest({
+    required this.e_id,
+    required this.employee,
+    required this.note,
+    required this.lineManageres,
+    required this.request_type,
+    required this.requested_at,
+    required this.requests_id,
+  });
+
+  factory EmployeeRequest.fromJson(Map<String, dynamic> json) => EmployeeRequest(
+    e_id: json["e_id"],
+    employee: json["employee"],
+    request_type: json["request_type"],
+    requests_id: json["requests_id"],
+    requested_at: DateTime.parse(json["requested_at"]),
+    note: json["note"]==null?"":json["note"],
+    lineManageres: List<EmployeeRequestLineManagere>.from(json["line_manageres"].map((x) => EmployeeRequestLineManagere.fromJson(x))),
+  );
+
+}
+
+class EmployeeRequestLineManagere {
+  int lm_r_id;
+  int lmId;
+  int state;
+  int requests_id;
+  dynamic managerNote;
+  String manager;
+  String managerPosition;
+
+
+  EmployeeRequestLineManagere({
+    required this.lm_r_id,
+    required this.lmId,
+    required this.state,
+    required this.requests_id,
+    this.managerNote,
+    required this.manager,
+    required this.managerPosition,
+  });
+
+  factory EmployeeRequestLineManagere.fromJson(Map<String, dynamic> json) => EmployeeRequestLineManagere(
+    lm_r_id: json["lm_r_id"],
+    lmId: json["lm_id"],
+    state: json["state"],
+    requests_id: json["requests_id"],
+    managerNote: json["manager_note"],
+    manager: json["manager"],
+    managerPosition: json["manager_position"],
+  );
 
 }

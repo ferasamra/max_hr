@@ -34,6 +34,10 @@ class App{
     return Get.snackbar(App_Localization.of(context).translate(title)
         , App_Localization.of(context).translate(msg),colorText: Colors.white,backgroundColor: red);
   }
+  static succMsgWithoutTranslate(BuildContext context , String title , String msg){
+    return Get.snackbar(title
+        , msg,colorText: Colors.white,backgroundColor: primary);
+  }
   static List<String> days = [
     "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
   ];

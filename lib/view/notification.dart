@@ -6,6 +6,7 @@ import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/overtime.dart';
+import 'package:max_hr/view/requests.dart';
 import 'package:max_hr/view/vacation_request.dart';
 import 'package:max_hr/view/vacations.dart';
 import 'package:max_hr/widgets/header_with_back.dart';
@@ -61,6 +62,8 @@ class MyNotification extends StatelessWidget {
                                   Get.to(()=>Vacations(pushedFromNotification: true));
                                 }else if (data!=null&&data['page'].toString() == 'overtime'){
                                   Get.to(()=>OverTime(pushedFromNotification: true));
+                                }else if (data!=null&&data['page'].toString() == 'requests'){
+                                  Get.to(()=>Requests());
                                 }else if (data!=null&&data['page'].toString() == 'approvals'){
                                   Get.to(()=>Approval(
                                     id: int.parse(data['id'].toString()),

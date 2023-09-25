@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:max_hr/app_localization.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:get/get.dart';
+import 'package:max_hr/view/add_request.dart';
+import 'package:max_hr/view/add_tickets.dart';
 import 'package:max_hr/view/overtime_request.dart';
 import 'package:max_hr/view/vacation_request.dart';
 import 'package:max_hr/widgets/header.dart';
@@ -93,9 +95,61 @@ class Requests extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: 20,),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(()=>AddRequest());
+                      },
+                      child: Container(
+                        width: Get.width,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: App.bgGrey,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: App.primary)
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(App_Localization.of(context).translate("add_requests"),style: TextStyle(color: App.grey2),),
+                              Icon(Icons.arrow_forward_ios,color: App.grey2,)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(()=>AddTicket());
+                      },
+                      child: Container(
+                        width: Get.width,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: App.bgGrey,
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: App.primary)
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(App_Localization.of(context).translate("add_ticket"),style: TextStyle(color: App.grey2),),
+                              Icon(Icons.arrow_forward_ios,color: App.grey2,)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                   ],
                 )
               ),
+
             ],
           ),
         ),

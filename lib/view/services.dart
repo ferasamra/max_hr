@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:max_hr/app_localization.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/view/discount_rewards.dart';
+import 'package:max_hr/view/employee_requests.dart';
 import 'package:max_hr/view/lateness.dart';
 import 'package:max_hr/view/overtime.dart';
+import 'package:max_hr/view/tiickets.dart';
 import 'package:max_hr/view/vacations.dart';
 import 'package:max_hr/widgets/header.dart';
 
@@ -89,6 +91,18 @@ class Services extends StatelessWidget {
                         Get.to(()=>DiscountReward(-1));
                       },
                       child: card(context,"assets/icons/discount.svg", "Discounts"),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(()=>EmployeeRequests());
+                      },
+                      child: card(context,"assets/icons/requests.svg", "requests"),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(()=>Tickets());
+                      },
+                      child: card(context,"assets/icons/tickets.svg", "tickets"),
                     ),
                   ],
                 )

@@ -73,6 +73,7 @@ class Employee {
   int latnessMinutes;
   double attendancePercentPerMonth;
   LastOperation? lastOperation;
+  LastBreakOperation? lastBreakOperation;
   String token;
 
   Employee({
@@ -123,6 +124,7 @@ class Employee {
     required this.latnessMinutes,
     required this.attendancePercentPerMonth,
     required this.lastOperation,
+    required this.lastBreakOperation,
     required this.token,
     required this.notification,
   });
@@ -130,7 +132,7 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
     eId: json["e_id"],
     name: json["name"],
-    need_photo_at_check_in: json["need_photo_at_check_in"],
+    need_photo_at_check_in: json["need_photo_at_check_in"]==null?0:json["need_photo_at_check_in"],
     email: json["email"],
     username: json["username"],
     password: json["password"],
@@ -148,7 +150,7 @@ class Employee {
     passportNumber: json["passport_number"],
     personalPhoneNumber: json["personal_phone_number"],
     countryOfResidence: json["country_of_residence"],
-    emirate: json["emirate"],
+    emirate: json["emirate"]==null?"":json["emirate"],
     homeAddress: json["home_address"],
     educationalLevel: json["educational_level"],
     academicMajor: json["academic_major"],
@@ -169,14 +171,15 @@ class Employee {
     image: json["image"],
     hasVacations: json["has_vacations"],
     employeeState: json["employee_state"],
-    companies: List<Company>.from(json["companies"].map((x) => Company.fromJson(x))),
-    absenceCount: json["absence_count"],
-    latnessCount: json["latness_count"],
-    latnessMinutes: json["latness_minutes"],
-    attendancePercentPerMonth: json["attendance_percent_per_month"]==null?0:double.parse(json["attendance_percent_per_month"].toString()) ,
-    lastOperation: LastOperation.fromJson(json["last_operation"]),
-    token: json["token"],
-    notification: List<Notification>.from(json["notification"].map((x) => Notification.fromJson(x))),
+    companies: json["companies"]==null?[]:List<Company>.from(json["companies"].map((x) => Company.fromJson(x))),
+    absenceCount: json["absence_count"]==null?0:json["absence_count"],
+    latnessCount: json["latness_count"]==null?0:json["latness_count"],
+    latnessMinutes: json["latness_minutes"]==null?0:json["latness_minutes"],
+    attendancePercentPerMonth: json["attendance_percent_per_month"]==null?0:json["attendance_percent_per_month"]==null?0:double.parse(json["attendance_percent_per_month"].toString()) ,
+    lastOperation: json["last_operation"]==null?null:LastOperation.fromJson(json["last_operation"]),
+    lastBreakOperation: json["last_break_operation"]==null?null:LastBreakOperation.fromJson(json["last_break_operation"]),
+    token: json["token"]==null?"":json["token"],
+    notification: json["notification"]==null?[]:List<Notification>.from(json["notification"].map((x) => Notification.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -304,6 +307,47 @@ class LastOperation {
     "e_id": eId,
     "in_location": inLocation,
     "out_location": outLocation,
+  };
+
+}
+
+class LastBreakOperation {
+  int breakId;
+  DateTime inDateTime;
+  DateTime? outDateTime;
+  int eId;
+  String in_time;
+  String? out_time;
+  String in_date;
+  String? out_date;
+
+  LastBreakOperation({
+    required this.breakId,
+    required this.inDateTime,
+    required this.outDateTime,
+    required this.eId,
+    required this.in_date,
+    required this.in_time,
+    required this.out_date,
+    required this.out_time,
+  });
+
+  factory LastBreakOperation.fromJson(Map<String, dynamic> json) => LastBreakOperation(
+    breakId: json["break_id"],
+    inDateTime: DateTime.parse(json["in_date_time"]),
+    outDateTime: json["out_date_time"] == null?null:DateTime.parse(json["out_date_time"]),
+    eId: json["e_id"],
+    in_date: json["in_date"],
+    in_time: json["in_time"],
+    out_date: json["out_date"],
+    out_time: json["out_time"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "break_id": breakId,
+    "in_date_time": inDateTime.toIso8601String(),
+    "out_date_time": outDateTime!.toIso8601String(),
+    "e_id": eId,
   };
 
 }

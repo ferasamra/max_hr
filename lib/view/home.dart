@@ -8,6 +8,7 @@ import 'package:max_hr/helper/global.dart';
 import 'package:max_hr/model/employee.dart';
 import 'package:max_hr/view/approval.dart';
 import 'package:max_hr/view/overtime.dart';
+import 'package:max_hr/view/requests.dart';
 import 'package:max_hr/view/vacation_request.dart';
 import 'package:max_hr/view/vacations.dart';
 import 'package:max_hr/widgets/month_card.dart';
@@ -39,10 +40,15 @@ class _HomeState extends State<Home> {
 
   void _handleMessage(RemoteMessage message) {
     try{
+      print('**************');
+      print(message.data);
+      App.succMsgWithoutTranslate(context, message.data['page'].toString(), message.data['selected_tab'].toString());
       if (message.data!=null&&message.data['page'].toString() == 'vacations') {
         Get.to(()=>Vacations());
       }else if (message.data!=null&&message.data['page'].toString() == 'overtime'){
         Get.to(()=>OverTime());
+      }else if (message.data!=null&&message.data['page'].toString() == 'requests'){
+        Get.to(()=>Requests());
       }else if (message.data!=null&&message.data['page'].toString() == 'approvals'){
         Get.to(()=>Approval(
           id: int.parse(message.data['id'].toString()),
@@ -169,49 +175,114 @@ class _HomeState extends State<Home> {
               SizedBox(height: 20,),
               lastOperation(context,Global.employee!.lastOperation),
               SizedBox(height: 20,),
-              AnimatedContainer(
-                width: Get.width /2,
-                duration: Duration(milliseconds: 500),
-                height: Get.width /2,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)
-                            ?App.grey4:homeController.shadow.value?
-                        App.primary:App.darkPrimary,
-                      ),
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: -5.0,
-                        blurRadius: 20.0,
-                      ),
-                    ]
-                ),
-                child: GestureDetector(
-                  onTap: (){
-                    homeController.checkInOut(context);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Container(
+              Stack(
+                children: [
+                  Container(
+                    width: Get.width,
+                    child: AnimatedContainer(
+                      width: Get.width /2,
+                      duration: Duration(milliseconds: 500),
+                      height: Get.width /2,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: App.bgGrey,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)
+                                  ?App.grey4:homeController.shadow.value?
+                              App.primary:App.darkPrimary,
+                            ),
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: -5.0,
+                              blurRadius: 20.0,
+                            ),
+                          ]
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(App_Localization.of(context).translate("press_to"),style: TextStyle(color: App.grey2),),
-                          SizedBox(height: 5,),
-                          Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)?
-                          Text(App_Localization.of(context).translate("check_in"),style: TextStyle(color: App.grey2,fontWeight: FontWeight.bold,fontSize: 18),)
-                              :Text(App_Localization.of(context).translate("check_out"),style: TextStyle(color: App.grey2,fontWeight: FontWeight.bold,fontSize: 18),),
-                        ],
+                      child: GestureDetector(
+                        onTap: (){
+
+
+                          if(Global.employee!.isFlixable == 1){
+                            homeController.checkInOut(context);
+                          }else{
+                            if(Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)){
+                              ///in
+                              print(Global.employee!.inTime);
+                              print(calcDifferanceByMins(Global.employee!.inTime));
+                              if(calcDifferanceByMins(Global.employee!.inTime)>0){
+                                showAttendanceJustification(
+                                    App_Localization.of(context).translate("you_are_late")
+                                    +" "
+                                    +App.getTextFromMinutes(calcDifferanceByMins(Global.employee!.inTime))
+                                    +" "
+                                    +App_Localization.of(context).translate("please_add_attendance_justification")
+                                );
+                              }else{
+                                homeController.checkInOut(context);
+                              }
+                            }else {
+                              ///out
+                              print(Global.employee!.outTime);
+                              print(calcDifferanceByMins(Global.employee!.outTime));
+                              if(calcDifferanceByMins(Global.employee!.outTime)<0){
+                                showAttendanceJustification(
+                                    App_Localization.of(context).translate("you_are_out_before")
+                                        +" "
+                                        +App.getTextFromMinutes(calcDifferanceByMins(Global.employee!.outTime).abs())
+                                        +" "
+                                        +App_Localization.of(context).translate("please_add_attendance_justification")
+                                );
+                              }else{
+                                homeController.checkInOut(context);
+                              }
+                            }
+                          }
+
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: App.bgGrey,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(App_Localization.of(context).translate("press_to"),style: TextStyle(color: App.grey2),),
+                                SizedBox(height: 5,),
+                                Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)?
+                                Text(App_Localization.of(context).translate("check_in"),style: TextStyle(color: App.grey2,fontWeight: FontWeight.bold,fontSize: 18),)
+                                    :Text(App_Localization.of(context).translate("check_out"),style: TextStyle(color: App.grey2,fontWeight: FontWeight.bold,fontSize: 18),),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Global.employee!.lastOperation == null|| (Global.employee!.lastOperation!.out_date != null)
+                      ?Center()
+                      :Positioned(
+                    right: 0,
+                    child: Container(
+                      width: Get.width * 0.25,
+                      height: 70,
+                      // color: Colors.red,
+                      child: Column(
+                        children: [
+                          Text(App_Localization.of(context).translate("break"),style: TextStyle(color: App.darkBlue,fontWeight: FontWeight.bold),),
+                          Switch(value:
+                          Global.employee!.lastBreakOperation == null ?false
+                              :Global.employee!.lastBreakOperation!.outDateTime == null?true:false,
+                              onChanged: (value){
+                                homeController.breakInOut(context);
+                          })
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               )
             ],
         ),
@@ -219,7 +290,58 @@ class _HomeState extends State<Home> {
           ))),
     );
   }
+  int calcDifferanceByMins(String? time){
+    if(time == null){
+      return 0;
+    }
+    var now = DateTime.now();
+    var time2 = DateTime(now.year,now.month,now.day,int.parse(time!.split(":")[0]),int.parse(time.split(":")[1]));
+    print(time2);
+    return now.difference(time2).inMinutes;
+  }
+  Future<void> showAttendanceJustification(String msg) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(App_Localization.of(context).translate("attendance_justification")),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+                SizedBox(height: 10,),
+                TextField(
+                  controller: homeController.attendanceJustification,
+                  minLines: 1,
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
 
+            TextButton(
+              child: Text(App_Localization.of(context).translate("close"),style: TextStyle(color: Colors.grey),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(App_Localization.of(context).translate("submit")),
+              onPressed: () {
+                Navigator.of(context).pop();
+                homeController.checkInOut(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   lastOperation(BuildContext context,LastOperation? lastOperation){
     if(lastOperation ==null){
       return Center();

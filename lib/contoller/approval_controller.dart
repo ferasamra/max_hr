@@ -3,26 +3,35 @@ import 'package:get/get.dart';
 import 'package:max_hr/helper/api.dart';
 import 'package:max_hr/helper/app.dart';
 import 'package:max_hr/model/requests.dart';
+import 'package:max_hr/model/tickets.dart';
 
 class ApprovalController extends GetxController{
 
-  RxBool loading = false.obs;
+  RxBool loading = true.obs;
   RxInt selectedPage = 0.obs;
   MyRequests? myRequests;
   TextEditingController overTimeNote = TextEditingController();
   TextEditingController vacationNote = TextEditingController();
+  TextEditingController requestNote = TextEditingController();
   int? selected_notification;
   int ot_id_notification = -1;
   int vr_id_notification = -1;
+  int r_id_notification = -1;
+  int ticket_id_notification = -1;
   initPage(int? selected,int? id)async{
     WidgetsBinding.instance.addPostFrameCallback((_) async{
       if(selected!=null&&id!=null&&selected == 0){
         ot_id_notification = id;
-      }else if(id!=null){
+      }else if(selected!=null&&id!=null&&selected == 1){
         vr_id_notification = id;
+      }else if(selected!=null&&id!=null&&selected == 2){
+        r_id_notification = id;
+      }else if(selected!=null&&id!=null&&selected == 3){
+        ticket_id_notification = id;
       }
       loading(true);
       await getData();
+      await Future.delayed(Duration(milliseconds: 300));
       loading(false);
     });
 
@@ -37,7 +46,32 @@ class ApprovalController extends GetxController{
       return myRequests;
     }
   }
-
+  closeTicket(Ticket ticket,BuildContext context)async{
+    ticket.loading(true);
+    await Api.hasInternet();
+    bool succ = await Api.closeTicket(ticket.ticketId);
+    if(succ){
+      loading(true);
+      await getData();
+      loading(false);
+    }else{
+      App.errMsg(context, "tickets", "wrong");
+    }
+    ticket.loading(false);
+  }
+  changeRequestsState(int state , EmployeeRequest employeeRequest,BuildContext context)async{
+    employeeRequest.loading(true);
+    await Api.hasInternet();
+    bool succ = await Api.changeRequestState(state, requestNote.text, employeeRequest.requests_id);
+    if(succ){
+      loading(true);
+      await getData();
+      loading(false);
+    }else{
+      App.errMsg(context, "requests", "please_wait_until_manager_response_before_you");
+    }
+    employeeRequest.loading(false);
+  }
   changeOvertimeState(int state , OvertimeRequest overtimeRequest,BuildContext context)async{
     overtimeRequest.loading(true);
     await Api.hasInternet();
@@ -85,6 +119,16 @@ class ApprovalController extends GetxController{
     await getData();
     loading(false);
     overtimeRequest.loading(false);
+  }
+
+  archiveRequests(EmployeeRequest employeeRequest)async{
+    employeeRequest.loading(true);
+    await Api.hasInternet();
+    await Api.archiveRequest(employeeRequest.requests_id);
+    loading(true);
+    await getData();
+    loading(false);
+    employeeRequest.loading(false);
   }
 
   archiveVacation(VacationRequest vacationRequest)async{

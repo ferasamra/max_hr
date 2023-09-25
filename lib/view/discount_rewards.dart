@@ -120,48 +120,5 @@ class DiscountReward extends StatelessWidget {
       )),
     );
   }
-  Widget positionCard(BuildContext context,String title,int state , String note){
-    return GestureDetector(
-      onTap: (){
-        if(state == -1){
-          openPopUp(context,note);
-        }
-      },
-      child: Column(
-        children: [
-          SvgPicture.asset("assets/icons/position.svg",width: 20,height: 20,),
-          SizedBox(height: 5,),
-          Text(title,style: TextStyle(color: App.darkBlue),),
-          SizedBox(height: 5,),
-          state == -1 ?SvgPicture.asset("assets/icons/close.svg",width: 10,height: 10,)
-              :state == 1 ?SvgPicture.asset("assets/icons/check.svg",width: 10,height: 10,)
-              :SvgPicture.asset("assets/icons/dash.svg",width: 10,height: 10,)
-        ],
-      ),
-    );
-  }
-  openPopUp(BuildContext context , String note){
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(App_Localization.of(context).translate("manager_note")),
-          content:  Column(
-            children: [
-              Text(note,style: TextStyle(color: App.grey2),)
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(App_Localization.of(context).translate("close")),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }

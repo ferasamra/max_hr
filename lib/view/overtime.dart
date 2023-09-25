@@ -181,6 +181,7 @@ class OverTime extends StatelessWidget {
         return AlertDialog(
           title: Text(App_Localization.of(context).translate("manager_note")),
           content:  Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(note,style: TextStyle(color: App.grey2),)
             ],

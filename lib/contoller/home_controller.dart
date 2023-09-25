@@ -15,6 +15,7 @@ class HomeController extends GetxController{
   RxBool loading = false.obs;
   RxBool shadow = false.obs;
   final ImagePicker picker = ImagePicker();
+  TextEditingController attendanceJustification = TextEditingController();
 
   @override
   void onInit() {
@@ -44,7 +45,11 @@ class HomeController extends GetxController{
               preferredCameraDevice: CameraDevice.front,
           );
           if(image != null ){
-            await Api.checkInOutWithImage(locationString,image);
+            if(Global.employee!.lastBreakOperation !=null &&
+                Global.employee!.lastBreakOperation!.outDateTime ==null){
+              await Api.breakInOut();
+            }
+            await Api.checkInOutWithImage(locationString,image,attendanceJustification.text);
           }else{
             // ignore: use_build_context_synchronously
             App.errMsg(context, "attendance", "please_take_a_photo_because_it_required");
@@ -52,7 +57,11 @@ class HomeController extends GetxController{
             return;
           }
         }else{
-          await Api.checkInOutWithImage(locationString,null);
+          if(Global.employee!.lastBreakOperation !=null &&
+              Global.employee!.lastBreakOperation!.outDateTime ==null){
+            await Api.breakInOut();
+          }
+          await Api.checkInOutWithImage(locationString,null,attendanceJustification.text);
         }
         await updateEmployeeData();
       }
@@ -62,9 +71,22 @@ class HomeController extends GetxController{
     }
   }
 
+  breakInOut(BuildContext context)async{
+    try{
+      loading(true);
+      await Api.hasInternet();
+      await Api.breakInOut();
+      await updateEmployeeData();
+      loading(false);
+    }catch(e){
+      App.errMsg(context, "attendance", "wrong");
+    }
+  }
+
   Future<bool> updateEmployeeData()async{
     LoginInfo? loginInfo = await Store.loadLoginInfo();
     await Api.hasInternet();
+    attendanceJustification.clear();
     Global.employee = await Api.login(loginInfo!.email, loginInfo.password);
     if(Global.employee == null){
       return updateEmployeeData();

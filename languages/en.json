@@ -120,5 +120,16 @@
   "edit": "Edit",
   "delete": "Delete",
   "show": "Show",
-  "please_take_a_photo_because_it_required": "Please Take A Photo Because It Required"
+  "please_take_a_photo_because_it_required": "Please Take A Photo Because It Required",
+  "break": "Break",
+  "attendance_justification": "Attendance Justification",
+  "you_are_late": "You are late",
+  "you_are_out_before": "You Are Check Out Before",
+  "please_add_attendance_justification": "Please Add Attendance Justification",
+  "add_requests": "Add Request",
+  "add_ticket": "Add Ticket",
+  "request_type": "Request Type",
+  "ticket_type": "Ticket Type",
+  "tickets": "Tickets",
+  "mention_to": "Mention To"
 }

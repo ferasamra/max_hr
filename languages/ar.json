@@ -120,5 +120,10 @@
   "edit": "تحرير",
   "delete": "حذف",
   "show": "عرض",
-  "please_take_a_photo_because_it_required": "الرجاء اخد صورة لانها مطلوية"
+  "please_take_a_photo_because_it_required": "الرجاء اخد صورة لانها مطلوية",
+  "break": "استراحة",
+  "attendance_justification": "تبرير الحضور",
+  "you_are_late": "لقد تأخرت",
+  "you_are_out_before": "لقد قمت بالخروج من قبل",
+  "Please_add_attendance_justification": "يُرجى إضافة مبرر الحضور"
 }

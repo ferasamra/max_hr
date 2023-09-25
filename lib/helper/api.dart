@@ -11,7 +11,11 @@ import 'package:max_hr/model/employee_document.dart';
 import 'package:max_hr/model/lateness.dart';
 import 'package:max_hr/model/my_docs.dart';
 import 'package:max_hr/model/overtime.dart';
+import 'package:max_hr/model/request_type.dart';
 import 'package:max_hr/model/requests.dart';
+import 'package:max_hr/model/ticket_details.dart';
+import 'package:max_hr/model/ticket_types.dart';
+import 'package:max_hr/model/tickets.dart';
 import 'package:max_hr/model/vacations.dart';
 import 'package:max_hr/model/vacations_type.dart';
 import 'package:max_hr/view/no_internet.dart';
@@ -68,7 +72,7 @@ class Api{
   }
 
   static Future<Employee?> login(String username,String password)async{
-    try{
+    // try{
       var headers = {
         'Content-Type': 'application/json',
       };
@@ -92,18 +96,19 @@ class Api{
       else {
         return null;
       }
-    }catch(err){
-      print(err);
-    }
+    // }catch(err){
+    //   print(err);
+    // }
   }
-  static Future<bool> checkInOutWithImage(String location,XFile? image)async{
+  static Future<bool> checkInOutWithImage(String location,XFile? image,String attendance_justification)async{
     var headers = {
       'Authorization': 'Bearer '+token,
     };
     var request = http.MultipartRequest('POST', Uri.parse(url+'/api/in-out/with-image'));
     request.fields.addAll({
       "e_id": Global.employee!.eId.toString(),
-      "location": location
+      "location": location,
+      "attendance_justification":attendance_justification,
     });
     if(image != null){
       request.files.add(await http.MultipartFile.fromPath('file', image.path));
@@ -131,6 +136,29 @@ class Api{
     request.body = json.encode({
       "e_id": Global.employee!.eId,
       "location": location
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+
+  }
+  static Future<bool> breakInOut()async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/break'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
     });
     request.headers.addAll(headers);
 
@@ -375,6 +403,34 @@ class Api{
       return false;
     }
   }
+  static Future<bool> changeRequestState(int state , String note , int requests_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/mobile/line-manager-requests'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "state": state,
+      "manager_note": note,
+      "requests_id":requests_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return false;
+    }
+  }
 
   static Future<bool> changeVacationState(int state , String note , int vr_id)async{
     var headers = {
@@ -452,6 +508,58 @@ class Api{
       return false;
     }
   }
+  static Future<bool> archiveRequest(int requests_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('DELETE', Uri.parse(url+'/api/requests'));
+    request.body = json.encode({
+      "id":requests_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return false;
+    }
+  }
+
+  static Future<bool> closeTicket(int ticket_id)async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('PUT', Uri.parse(url+'/api/ticket/mobile/close-ticket'));
+    request.body = json.encode({
+      "ticket_id":ticket_id,
+      "e_id":Global.employee!.eId
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      String data = (await response.stream.bytesToString());
+      print(data);
+      return false;
+    }
+  }
 
   static Future<bool> archiveVacations(int vr_id)async{
     var headers = {
@@ -475,7 +583,26 @@ class Api{
       return false;
     }
   }
+  static Future<List<RequestType>> getRequestTypes()async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/requests/type'));
 
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return RequestTypesDecoder.fromJson(json.decode(data)).requestTypes;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <RequestType>[];
+    }
+
+  }
   static Future<MyRequests?> getRequests()async{
     var headers = {
       'authorization': 'Bearer '+token,
@@ -497,6 +624,165 @@ class Api{
     }
 
   }
+  ///
+  static Future<bool> addTicketReplay(String msg,int toId, int ticket_id)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/ticket/replay'));
+    request.body = json.encode({
+      "msg": msg,
+      "from_e_id": Global.employee!.eId,
+      "to_e_id": toId,
+      "ticket_id": ticket_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+  }
+  static Future<List<TicketType>> getTicketTypes()async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/ticket-types'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return TicketTypesDecoder.fromJson(json.decode(data)).ticketTypes;
+    }
+    else {
+    print(response.reasonPhrase);
+    return <TicketType>[];
+    }
+
+  }
+  static Future<bool> addTicket(int tt_id, int mention_id , String note)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/ticket'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "tt_id": tt_id,
+      "note": note,
+      "mention_to": mention_id
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+    print(response.reasonPhrase);
+    return false;
+    }
+
+  }
+  static Future<List<Employee>> getEmployeeToMentionTo()async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/employee'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      List<Employee> employees = <Employee>[];
+      var list = json.decode(data) as List;
+      for(int i=0 ; i <list.length ; i++){
+        print(list[i]);
+        employees.add(Employee.fromJson(list[i]));
+      }
+      return employees;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <Employee>[];
+    }
+
+  }
+  static Future<List<Ticket>> getTickets()async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/ticket/for-employee/${Global.employee!.eId}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return TicketsDecoder.fromJson(json.decode(data)).tickets;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <Ticket>[];
+    }
+  }
+  static Future<TicketsDetailsDecoder?> getTicketDetails(int ticket_id)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/ticket-replay/$ticket_id'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+      return TicketsDetailsDecoder.fromJson(json.decode(data));
+    }
+    else {
+      print(response.reasonPhrase);
+      return null;
+    }
+
+  }
+  static Future<List<EmployeeRequest>> getEmployeeRequests()async{
+    var headers = {
+      'authorization': 'Bearer '+token,
+    };
+    var request = http.Request('GET', Uri.parse(url+'/api/mobile/requests/for-employee/${Global.employee!.eId}'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      String data = (await response.stream.bytesToString());
+
+      return EmployeeRequestsDecoder.fromJson(json.decode(data)).requests;
+    }
+    else {
+      print(response.reasonPhrase);
+      return <EmployeeRequest>[];
+    }
+
+  }
 
   static Future<bool> addOverTimeRequest(String from,String to,String date, String note)async{
     var headers = {
@@ -509,6 +795,32 @@ class Api{
       "_from": from,
       "_to": to,
       "date": date,
+      "note": note
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      return true;
+    }
+    else {
+      print(response.reasonPhrase);
+      return false;
+    }
+
+  }
+
+  static Future<bool> addRequest(int rt_id, String note)async{
+    var headers = {
+      'Authorization': 'Bearer '+token,
+      'Content-Type': 'application/json',
+    };
+    var request = http.Request('POST', Uri.parse(url+'/api/requests'));
+    request.body = json.encode({
+      "e_id": Global.employee!.eId,
+      "rt_id": rt_id,
       "note": note
     });
     request.headers.addAll(headers);

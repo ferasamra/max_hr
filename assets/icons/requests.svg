@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35.1" height="35.1" viewBox="0 0 35.1 35.1">
+
+  <g id="Mask_Group_451" data-name="Mask Group 451" transform="translate(-2903.401 -1099.561)" clip-path="url(#clip-path)">
+    <g id="noun-requests-report-90629" transform="translate(2895.271 1087.689)">
+      <g id="Group_36681" data-name="Group 36681" transform="translate(10 16.155)">
+        <path id="Path_38645" data-name="Path 38645" d="M45.224,16.155h-19.3a3.623,3.623,0,0,0-3.618,3.618H24.72a1.21,1.21,0,0,1,1.206-1.206h19.3a1.209,1.209,0,0,1,1.206,1.206V34.245a1.209,1.209,0,0,1-1.206,1.207v2.412a3.622,3.622,0,0,0,3.618-3.619V19.773A3.621,3.621,0,0,0,45.224,16.155Z" transform="translate(-17.483 -16.155)" fill="#6edc43"/>
+        <g id="Group_36677" data-name="Group 36677" transform="translate(0 4.825)">
+          <path id="Path_38646" data-name="Path 38646" d="M12.755,76.376c-.009-.013-.022-.024-.031-.037H10.168a3.628,3.628,0,0,0,2.587,2.807V76.376Z" transform="translate(-10.102 -57.572)" fill="#6edc43"/>
+          <path id="Path_38647" data-name="Path 38647" d="M32.916,28.463h-19.3A3.623,3.623,0,0,0,10,32.081v9.463h2.412V32.081a1.21,1.21,0,0,1,1.206-1.206h19.3a1.209,1.209,0,0,1,1.206,1.206V46.553a1.209,1.209,0,0,1-1.206,1.206H18.5v2.412H32.916a3.622,3.622,0,0,0,3.618-3.618V32.081A3.62,3.62,0,0,0,32.916,28.463Z" transform="translate(-10 -28.463)" fill="#6edc43"/>
+        </g>
+        <g id="Group_36680" data-name="Group 36680" transform="translate(0.878 15.909)">
+          <g id="Group_36679" data-name="Group 36679">
+            <g id="Group_36678" data-name="Group 36678">
+              <path id="Path_38648" data-name="Path 38648" d="M17.9,56.742V60.7h3.753v1.765H17.9v3.975h-1.93V62.464H12.24V60.7h3.734V56.742Z" transform="translate(-12.24 -56.742)" fill="#6edc43"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_8877" data-name="Rectangle 8877" width="35.1" height="35.1" transform="translate(2903.401 1099.561)" fill="#943030" opacity="0.28"/>
+    </clipPath>
+  </defs>
+</svg>
