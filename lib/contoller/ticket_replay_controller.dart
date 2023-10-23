@@ -7,7 +7,7 @@ import 'package:max_hr/model/ticket_details.dart';
 
 class TicketReplayController extends GetxController{
   ScrollController scrollController = ScrollController();
-  RxBool loading = false.obs;
+  RxBool loading = true.obs;
   RxBool typing = false.obs;
   RxBool fake = false.obs;
   TicketsDetailsDecoder? ticketsDetailsDecoder;
@@ -23,6 +23,8 @@ class TicketReplayController extends GetxController{
 
   getData(int ticket_id)async{
     ticketsDetailsDecoder = await Api.getTicketDetails(ticket_id);
+    print('*******************');
+    print(ticketsDetailsDecoder!.ticketReplay.length);
     if(ticketsDetailsDecoder == null){
       return await getData(ticket_id);
     }else{

@@ -29,7 +29,7 @@ class _TicketsReplayState extends State<TicketsReplay> {
     ticketReplayController.initPage(widget.ticketId);
     // Dart client
     print('connection');
-    socket = IO.io('http://3.112.123.226:3000', <String, dynamic>{
+    socket = IO.io('http://35.242.226.38:3015', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -44,6 +44,8 @@ class _TicketsReplayState extends State<TicketsReplay> {
       socket!.on('end-typing', (data) => ticketReplayController.typing(false));
 
       socket!.onDisconnect((_) => print('Connection Disconnection'));
+      // socket!.onConnectError((err) => print(err));
+      // socket!.onError((err) => print(err));
       socket!.onConnectError((err) => Get.back());
       socket!.onError((err) => Get.back());
     }
