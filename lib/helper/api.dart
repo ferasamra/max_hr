@@ -21,9 +21,11 @@ import 'package:max_hr/model/vacations_type.dart';
 import 'package:max_hr/view/no_internet.dart';
 import 'package:http/http.dart' as http;
 import 'package:max_hr/view/requests.dart';
+
 class Api{
 
-  static String url = "https://phpstack-548447-3998935.cloudwaysapps.com";
+  static String url = "http://hr-system-613863818.ap-northeast-1.elb.amazonaws.com";
+  // static String url = "https://hr.maxart.ae";
   static String media_url = url+"/uploads/";
   static String token = "";
 

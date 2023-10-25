@@ -29,7 +29,9 @@ class _TicketsReplayState extends State<TicketsReplay> {
     ticketReplayController.initPage(widget.ticketId);
     // Dart client
     print('connection');
-    socket = IO.io('http://35.242.226.38:3015', <String, dynamic>{
+    ///http://35.242.226.38:3015
+
+    socket = IO.io('http://18.183.237.153:3000', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
